@@ -10,15 +10,18 @@ import * as shiki from 'shiki/dist/index.browser.mjs'
 import * as Plot from '@observablehq/plot'
 
 // I don't trust optimizers to not get rid of the Plot import
-Plot.plot({})
+const pl1 = Plot.plot({})
+const fm1 = format('')
 
-const mtcars = await csv('/data/mtcars.csv', autoType);
-const ipBytes = await json('/data/ip-bytes.json');
-const tagsIps = await json('/data/tags-ips.json');
+const mtcars = await csv('data/mtcars.csv', autoType);
+const ipBytes = await json('data/ip-bytes.json');
+const tagsIps = await json('data/tags-ips.json');
 
-const highlighter = await shiki.getHighlighter({ theme: 'nord-light' })
+const highlighter = await shiki.getHighlighter({ theme: 'nord-light', wasmPath: 'dist/' })
 
 const jsbOptions = {
+  fm1: fm1,
+  pl1: pl1,
   "indent_size": "2",
   "indent_char": " ",
   "max_preserve_newlines": "5",

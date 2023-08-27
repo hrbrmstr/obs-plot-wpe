@@ -4,3 +4,12 @@ plot-element {
   padding: 2em;
   margin-bottom: 2em;
 }
+
+pre.index {
+  overflow: auto;
+  overflow-wrap: break-word;
+  padding: 2rem;
+  margin-top: 1rem;
+  white-space: pre-wrap;
+  border: 0.5px dotted gray;
+}

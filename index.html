@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>[Observable] Plot Twisting</title>
+  <title>Bonus Drop #23: [Observable] Plot Twisting</title>
+
+  <meta name="description" content="A look behind the OJS Plot curtain">
+
+  <meta property="og:url" content="https://rud.is/wpe/2023-08-27/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="hrbrmstr (boB Rudis)">
+  <meta property="og:description" content="A look behind the OJS Plot curtain">
+  <meta property="og:image" content="https://rud.is/wpe/2023-08-27/preview.png">
+
   <link rel="stylesheet" href="./node_modules/tachyons/css/tachyons.min.css"/>
   <link rel="stylesheet" href="./src/index.css" />
   <script type="module" src="./src/plot-element.js"></script>
@@ -14,8 +23,8 @@
   <!-- Top Navigation Bar -->
   <nav class="bg-black white pa3">
     <div class="mw9 center">
-      <a href="#" class="link dim white f4 f3-ns dib mr3">Random</a>
-      <a href="#" class="link dim white dib mr3">Home</a>
+      <a href="#" class="link dim white f4 f3-ns dib mr3">Bonus Drop #23</a>
+      <a target="_blank" href="https://dailyfinds.hrbrmstr.dev/" class="link dim white dib mr3">hrbrmstr's Daily Drop</a>
     </div>
   </nav>
   
@@ -35,7 +44,7 @@
     <article class="lh-copy f6 mt4">
 <p class="f5">What's all this then, now, eh?</p>
 
-<p class="f5">Well, I needed a Bonus Drop, and I also wanted to talk about how Observable Plot objects are really just SVG elements on (doctor approved) steroids. So, I combined the two, and went a bit overboard by desiging a custom <code>LitElement</code> that would let me type the least amount of keystrokes to demonstrate what I'm talking about.</p>
+<p class="f5">Well, I needed a Bonus Drop, and I also wanted to talk about how Observable Plot objects are really just SVG elements on (doctor approved) steroids. So, I combined the two, and went a bit overboard by desiging a custom <code>LitElement</code> that would let me type the least amount of keystrokes to demonstrate what I'm talking about. (Link to that at the end.)</p>
 
 <p class="f5">You'll see some references to <code>mtcars</code> in code snippets. That's because I'm an old "R" dude and have that example dataset <i>everywhere</i>. You can use it in JS via <code>https://rud.is/data/mtcars.csv</code>. That directory has a <i>generous</i> CORS policy, too.</p>
 
@@ -108,18 +117,119 @@ Plot.plot({
 });"
 ></plot-element>
 
-<shiki-element sourceCode="" language='js' theme='nord-light'>
+<p class="f5">We'll be seeing that plot one more time.</p>
+
+<p class="f5">Let's try to get at the text elements on that Y-axis. That IP address boxplot was stored in a <code>ipPlt</code> object, so we can interrogate it:</p>
+
+<shiki-element sourceCode="
+const textElements = ipPlt.querySelectorAll(
+  'figure.ip-plt-figure > svg > g[aria-label=\'y-axis tick label\'] > text'
+);
+
+[...textElements].map(d => d.textContent)" language='js' theme='nord-light'>
 </shiki-element>
 
-<p class="f5"></p>
-<p class="f5"></p>
-<p class="f5"></p>
-<p class="f5"></p>
-<p class="f5"></p>
-<p class="f5"></p>
-<p class="f5"></p>
+<pre id="ip-list" class="index"></pre>
+
+<p class="f5">The <code>textElements</code> object is a live <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/NodeList"><code>NodeList</code></a>. That means we can do fun things like:</p>
+
+<shiki-element sourceCode="
+textElements.forEach((textElement) => {
+
+  textElement.style.cursor = 'pointer';
+
+  // when we click an ip address it'll go here
+  textElement.addEventListener('click', () => {
+    window.open(
+      `https://viz.greynoise.io/ip/${textElement.textContent}`
+    );
+  });
+
+  // when we hover over it'll go bold
+  textElement.addEventListener('mouseenter', () => {
+    textElement.style.fontWeight = 'bold';
+  });
+
+  // when we hover away it'll go back to normal
+  textElement.addEventListener('mouseleave', () => {
+    textElement.style.fontWeight = 'normal';
+  });
+
+});
+" language="js" theme="nord-light">
+</shiki-element>
+
+<p class="f5">Which you can try out below, by hovering over the IP addresses:</p>
+
+<div id="plt-with-hover"></div>
+
+<p class="f5">You can see some additional JS machinations <a target="_blank" href="https://observablehq.com/@hrbrmstr/machinating-observable-plot-axis-text">the aforementioned Observable notebook.</a></p>
+
+<p class="f5">You can also find two <a target="_blank" href="https://lit.dev/">Lit</a> Elements used in this Bonus Drop on <a target="_blank" href="https://gitlab.com/hrbrmstr/obs-plot">GitLab.</a></p>
 
     </article>
   </main>
+<script type="module">
+import { csv, json } from 'd3-fetch'
+import { autoType } from 'd3-dsv'
+import { format } from 'd3-format'
+import * as Plot from '@observablehq/plot'
+
+const mtcars = await csv('data/mtcars.csv', autoType);
+const ipBytes = await json('data/ip-bytes.json');
+const tagsIps = await json('data/tags-ips.json');
+
+const ipPlt = Plot.plot({
+  className: 'ip-plt',
+  marginTop: 50,
+  title: 'IP/Request Bytes Distribution',
+  subtitle: `Total samples: ${format(',')(ipBytes.length)}`,
+  marginRight: 20,
+  marginBottom: 30,
+  marginLeft: 160,
+  style: {
+    background: '#00000000',
+    fontFamily: 'Inconsolata,monospace',
+    fontSize: '18px'
+  },
+  x: {
+    grid: true,
+    inset: 6
+  },
+  y: {
+    label: null
+  },
+  marks: [
+    Plot.boxX(ipBytes, { x: 'bytes', y: 'ip' }),
+    Plot.axisX({ anchor: 'top' })
+  ]
+});
+
+const textElements = ipPlt.querySelectorAll(
+  'figure.ip-plt-figure > svg > g[aria-label="y-axis tick label"] > text'
+);
+
+const ipList = document.getElementById("ip-list");
+ipList.innerText = [...textElements].map(d => d.textContent).join("\n");
+
+textElements.forEach((textElement) => {
+  textElement.style.cursor = "pointer";
+  textElement.addEventListener("click", () => {
+    window.open(
+      `https://viz.greynoise.io/ip/${textElement.textContent}?utm_source=observable`
+    );
+  });
+  textElement.addEventListener("mouseenter", () => {
+    textElement.style.fontWeight = "bold";
+  });
+  textElement.addEventListener("mouseleave", () => {
+    textElement.style.fontWeight = "normal";
+  });
+});
+
+const plotHover = document.getElementById("plt-with-hover");
+plotHover.replaceChildren(ipPlt)
+
+</script>
 </body>
 </html>
