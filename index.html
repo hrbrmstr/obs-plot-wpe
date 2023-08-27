@@ -172,14 +172,10 @@ textElements.forEach((textElement) => {
     </article>
   </main>
 <script type="module">
-import { csv, json } from 'https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm'
-import { autoType } from 'https://cdn.jsdelivr.net/npm/d3-dsv@3.0.1/+esm'
 import { format } from 'https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm'
 import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.10/+esm'
 
-const mtcars = await csv('data/mtcars.csv', autoType);
-const ipBytes = await json('data/ip-bytes.json');
-const tagsIps = await json('data/tags-ips.json');
+import { mtcars, ipBytes, tagsIps } from './js/shared.js'
 
 const ipPlt = Plot.plot({
   className: 'ip-plt',

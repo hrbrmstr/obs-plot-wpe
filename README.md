@@ -22,6 +22,8 @@ Top-level bits that really matter:
 ├── dist
 │   └── onig.wasm
 ├── index.html
+├── js
+│   └── shared.js
 ├── languages
 ├── shiki
 │   ├── dist
