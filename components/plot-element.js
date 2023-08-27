@@ -1,27 +1,20 @@
-import { LitElement, css, html, unsafeCSS } from 'lit'
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { default as tachyons } from "tachyons/css/tachyons.min.css?inline"
-import { html_beautify } from 'js-beautify/js/lib/beautify-html.js'
-import { js_beautify } from 'js-beautify/js/lib/beautify.js'
-import { csv, json } from 'd3-fetch'
-import { autoType } from 'd3-dsv'
-import { format } from 'd3-format'
-import * as shiki from 'shiki/dist/index.browser.mjs'
-import * as Plot from '@observablehq/plot'
+import { LitElement, css, html, unsafeCSS, unsafeHTML } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js'
+import { csv, json } from 'https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm'
+import { autoType } from 'https://cdn.jsdelivr.net/npm/d3-dsv@3.0.1/+esm'
+import { format } from 'https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm'
+import * as shiki from '../shiki/dist/index.browser.mjs'
+import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.10/+esm'
 
-// I don't trust optimizers to not get rid of the Plot import
-const pl1 = Plot.plot({})
-const fm1 = format('')
+const tachyons_pre = await fetch('https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css')
+const tachyons = await tachyons_pre.text()
 
 const mtcars = await csv('data/mtcars.csv', autoType);
 const ipBytes = await json('data/ip-bytes.json');
 const tagsIps = await json('data/tags-ips.json');
 
-const highlighter = await shiki.getHighlighter({ theme: 'nord-light', wasmPath: 'dist/' })
+const highlighter = await shiki.getHighlighter({ theme: 'nord-light', wasmPath: '../shiki/dist/' })
 
 const jsbOptions = {
-  fm1: fm1,
-  pl1: pl1,
   "indent_size": "2",
   "indent_char": " ",
   "max_preserve_newlines": "5",
@@ -42,7 +35,7 @@ const jsbOptions = {
 }
 
 export class PlotElement extends LitElement {
-  
+
   static get properties() {
     return {
       plotSource: { text: String }
@@ -58,7 +51,7 @@ export class PlotElement extends LitElement {
 
     const renderedPlot = eval(`${this.plotSource}`);
     const renderedPlotSource = highlighter.codeToHtml(js_beautify(this.plotSource, jsbOptions), { lang: 'js' })
-    const renderedPlotSVG = highlighter.codeToHtml(html_beautify(renderedPlot.outerHTML.replace(/h3><svg/, 'h3>\n<svg'), jsbOptions), {lang : 'html'})
+    const renderedPlotSVG = highlighter.codeToHtml(html_beautify(renderedPlot.outerHTML.replace(/h3><svg/, 'h3>\n<svg'), jsbOptions), { lang: 'html' })
 
     return html`
     <h2>OJS Plot Code</h2>

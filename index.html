@@ -9,14 +9,16 @@
 
   <meta property="og:url" content="https://rud.is/wpe/2023-08-27/">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="hrbrmstr (boB Rudis)">
+  <meta property="og:title" content="Bonus Drop #23: [Observable] Plot Twisting">
   <meta property="og:description" content="A look behind the OJS Plot curtain">
   <meta property="og:image" content="https://rud.is/wpe/2023-08-27/preview.png">
 
-  <link rel="stylesheet" href="./node_modules/tachyons/css/tachyons.min.css"/>
-  <link rel="stylesheet" href="./src/index.css" />
-  <script type="module" src="./src/plot-element.js"></script>
-  <script type="module" src="./src/shiki-element.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify-html.min.js"></script>
+  <link rel="stylesheet" href="./css/index.css" />
+  <script type="module" src="./components/plot-element.js"></script>
+  <script type="module" src="./components/shiki-element.js"></script>
 </head>
 <body class="sans-serif bg-near-white">
 
@@ -170,10 +172,10 @@ textElements.forEach((textElement) => {
     </article>
   </main>
 <script type="module">
-import { csv, json } from 'd3-fetch'
-import { autoType } from 'd3-dsv'
-import { format } from 'd3-format'
-import * as Plot from '@observablehq/plot'
+import { csv, json } from 'https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm'
+import { autoType } from 'https://cdn.jsdelivr.net/npm/d3-dsv@3.0.1/+esm'
+import { format } from 'https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm'
+import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.10/+esm'
 
 const mtcars = await csv('data/mtcars.csv', autoType);
 const ipBytes = await json('data/ip-bytes.json');

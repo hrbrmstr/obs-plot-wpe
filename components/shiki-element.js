@@ -1,9 +1,8 @@
-import { LitElement, css, html, unsafeCSS } from 'lit'
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { default as tachyons } from "tachyons/css/tachyons.min.css?inline"
-import { html_beautify } from 'js-beautify/js/lib/beautify-html.js'
-import { js_beautify } from 'js-beautify/js/lib/beautify.js'
-import * as shiki from 'shiki/dist/index.browser.mjs'
+import { LitElement, css, html, unsafeCSS, unsafeHTML } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js'
+import * as shiki from '../shiki/dist/index.browser.mjs'
+
+const tachyons_pre = await fetch('https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css')
+const tachyons = await tachyons_pre.text()
 
 const jsbOptions = {
   "indent_size": "2",
@@ -91,7 +90,7 @@ class ShikiElement extends LitElement {
     return html`
   ${unsafeHTML(this.highlightedCode)}
   `;
-    
+
   }
 
   static styles = css`
