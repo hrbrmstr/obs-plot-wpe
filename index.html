@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,45 +15,60 @@
   <meta property="og:image" content="https://rud.is/wpe/2023-08-27/preview.png">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify-html.min.js"></script>
   <link rel="stylesheet" href="./css/index.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.9/js/lib/beautify-html.min.js"></script>  
+  
+  <!-- Everything works better across all 3 major browsers if we put D3 and Plot in the global scope -->
+  <script src="./js/d3.js"></script>
+  <script src="./js/plot.js"></script>
+
   <script type="module" src="./components/plot-element.js"></script>
   <script type="module" src="./components/shiki-element.js"></script>
+
 </head>
+
 <body class="sans-serif bg-near-white">
 
-  <!-- Top Navigation Bar -->
-  <nav class="bg-black white pa3">
-    <div class="mw9 center">
-      <a href="#" class="link dim white f4 f3-ns dib mr3">Bonus Drop #23</a>
-      <a target="_blank" href="https://dailyfinds.hrbrmstr.dev/" class="link dim white dib mr3">hrbrmstr's Daily Drop</a>
-    </div>
-  </nav>
-  
-  <!-- Main Content -->
-  <main class="mw8 center ph3 pv4">
-    <!-- Blog Post Title -->
-    <h1 class="f2 lh-title">[Observable] Plot Twisting</h1>
-    <!-- Subtitle -->
-    <h2 class="f4 lh-title gray">A look behind the OJS Plot curtain</h2>
-    <!-- Date and Author -->
-    <div class="gray f6">
-      <span>Posted on: <time datetime="2023-08-26">2023-08-27</time></span>
-      <span class="ml3">Author: @hrbrmstr</span>
-    </div>
-    
-    <!-- Blog Post Content -->
-    <article class="lh-copy f6 mt4">
+<nav class="bg-black white pa3">
+  <div class="mw9 center">
+    <a href="#" class="link dim white f4 f3-ns dib mr3">Bonus Drop #23</a>
+    <a target="_blank" href="https://dailyfinds.hrbrmstr.dev/" class="link dim white dib mr3">hrbrmstr's Daily
+      Drop</a>
+  </div>
+</nav>
+
+<main class="mw8 center ph3 pv4">
+
+<h1 class="f2 lh-title">[Observable] Plot Twisting</h1>
+
+<h2 class="f4 lh-title gray">A look behind the OJS Plot curtain</h2>
+
+<div class="gray f6">
+  <span>Posted on: <time datetime="2023-08-26">2023-08-27</time></span>
+  <span class="ml3">Author: @hrbrmstr</span>
+</div>
+
+<article class="lh-copy f6 mt4">
 <p class="f5">What's all this then, now, eh?</p>
 
-<p class="f5">Well, I needed a Bonus Drop, and I also wanted to talk about how Observable Plot objects are really just SVG elements on (doctor approved) steroids. So, I combined the two, and went a bit overboard by desiging a custom <code>LitElement</code> that would let me type the least amount of keystrokes to demonstrate what I'm talking about. (Link to that at the end.)</p>
+<p class="f5">Well, I needed a Bonus Drop, and I also wanted to talk about how Observable Plot objects are really
+  just SVG elements on (doctor approved) steroids. So, I combined the two, and went a bit overboard by desiging a
+  custom <code>LitElement</code> that would let me type the least amount of keystrokes to demonstrate what I'm
+  talking about. (Link to that at the end.)</p>
 
-<p class="f5">You'll see some references to <code>mtcars</code> in code snippets. That's because I'm an old "R" dude and have that example dataset <i>everywhere</i>. You can use it in JS via <code>https://rud.is/data/mtcars.csv</code>. That directory has a <i>generous</i> CORS policy, too.</p>
+<p class="f5">You'll see some references to <code>mtcars</code> in code snippets. That's because I'm an old "R"
+  dude and have that example dataset <i>everywhere</i>. You can use it in JS via
+  <code>https://rud.is/data/mtcars.csv</code>. That directory has a <i>generous</i> CORS policy, too.</p>
 
-<p class="f5">You'll also see references to <code>ipBytes</code> and <code>tagsToIps</code>. You can find that data in <a target="_blank" href="https://observablehq.com/@hrbrmstr/machinating-observable-plot-axis-text">this Observable notebook</a>.</p>
+<p class="f5">You'll also see references to <code>ipBytes</code> and <code>tagsToIps</code>. You can find that
+  data in <a target="_blank" href="https://observablehq.com/@hrbrmstr/machinating-observable-plot-axis-text">this
+    Observable notebook</a>.</p>
 
-<p class="f5">So, below are some example OJS/OBS (I mix up the acronyms alot) <a target="_blank" href="https://observablehq.com/plot/">Plot</a> examples that show the <code>Plot</code> code, the rendered plot, and then the generated SVG. Here's an example one:</p>
+<p class="f5">So, below are some example OJS/OBS (I mix up the acronyms alot) <a target="_blank"
+    href="https://observablehq.com/plot/">Plot</a> examples that show the <code>Plot</code> code, the rendered
+  plot, and then the generated SVG. Here's an example one:</p>
 
 <plot-element id="1" plotSource="
 Plot.plot({
@@ -65,14 +81,17 @@ Plot.plot({
     Plot.frame(),
     Plot.text(['Racketeering under Georgia\'s\nRacketeer Influenced and Corrupt Organizations (RICO) Act.'], {frameAnchor: 'middle', fontSize: 18})
   ]
-})"
-></plot-element>
+})"></plot-element>
 
 <p class="f5">(Feel <i>heartily</i> encouraged to ignore me forever if that example text offends you.)</p>
 
-<p class="f5">That initial example is actually a pretty decent encapsulation of what you get when you fill in a good chunk of <code>Plot</code> details. There's the <code>figure</code> HTML element with our custom <code>className</code>, some header bits, the SVG with some  <code>style</code> and elements that make up the actual plot.</p>
+<p class="f5">That initial example is actually a pretty decent encapsulation of what you get when you fill in a
+  good chunk of <code>Plot</code> details. There's the <code>figure</code> HTML element with our custom
+  <code>className</code>, some header bits, the SVG with some <code>style</code> and elements that make up the
+  actual plot.</p>
 
-<p class="f5">The result of that <code>Plot</code> call is an SVG JS object. But, before we talk about that, let's see a bit more. How about a scatterplot with a legend?!</p>
+<p class="f5">The result of that <code>Plot</code> call is an SVG JS object. But, before we talk about that, let's
+  see a bit more. How about a scatterplot with a legend?!</p>
 
 <plot-element id="2" plotSource="
 Plot.plot({
@@ -84,19 +103,20 @@ Plot.plot({
     Plot.frame(),
     Plot.dot(mtcars, { x: 'wt', y: 'mpg', fill: (d) => `cyl-${d.cyl}`})
   ]
-})"
-></plot-element>
+})"></plot-element>
 
-<p class="f5">We can target all those elements in JS and setup all kinds of event handlers and styling just like we would back in the vanilla D3 days.</p>
+<p class="f5">We can target all those elements in JS and setup all kinds of event handlers and styling just like
+  we would back in the vanilla D3 days.</p>
 
-<p class="f5">Let's use some of <i>my</i> data. In a new prototype/blueprint app we're making at work, I wanted to be able to do "things" with the IP addresses in this chart:</p>
+<p class="f5">Let's use some of <i>my</i> data. In a new prototype/blueprint app we're making at work, I wanted to
+  be able to do "things" with the IP addresses in this chart:</p>
 
 <plot-element id="3" plotSource="
 Plot.plot({
   className: 'ip-plt',
-  marginTop: 50,
   title: 'IP/Request Bytes Distribution',
-  subtitle: `Total samples: ${format(',')(ipBytes.length)}`,
+  subtitle: `Total samples: ${d3.format(',')(ipBytes.length)}`,
+  marginTop: 50,
   marginRight: 20,
   marginBottom: 30,
   marginLeft: 160,
@@ -114,14 +134,15 @@ Plot.plot({
   },
   marks: [
     Plot.boxX(ipBytes, { x: 'bytes', y: 'ip' }),
-    Plot.axisX({ anchor: 'top' })
+    Plot.axisX({ anchor: 'top' }),
+    Plot.axisY({ fontSize: 16 })
   ]
-});"
-></plot-element>
+});"></plot-element>
 
 <p class="f5">We'll be seeing that plot one more time.</p>
 
-<p class="f5">Let's try to get at the text elements on that Y-axis. That IP address boxplot was stored in a <code>ipPlt</code> object, so we can interrogate it:</p>
+<p class="f5">Let's try to get at the text elements on that Y-axis. That IP address boxplot was stored in a
+  <code>ipPlt</code> object, so we can interrogate it:</p>
 
 <shiki-element sourceCode="
 const textElements = ipPlt.querySelectorAll(
@@ -133,7 +154,9 @@ const textElements = ipPlt.querySelectorAll(
 
 <pre id="ip-list" class="index"></pre>
 
-<p class="f5">The <code>textElements</code> object is a live <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/NodeList"><code>NodeList</code></a>. That means we can do fun things like:</p>
+<p class="f5">The <code>textElements</code> object is a live <a target="_blank"
+    href="https://developer.mozilla.org/en-US/docs/Web/API/NodeList"><code>NodeList</code></a>. That means we can
+  do fun things like:</p>
 
 <shiki-element sourceCode="
 textElements.forEach((textElement) => {
@@ -165,69 +188,71 @@ textElements.forEach((textElement) => {
 
 <div id="plt-with-hover"></div>
 
-<p class="f5">You can see some additional JS machinations <a target="_blank" href="https://observablehq.com/@hrbrmstr/machinating-observable-plot-axis-text">the aforementioned Observable notebook.</a></p>
+<p class="f5">You can see some additional JS machinations <a target="_blank"
+    href="https://observablehq.com/@hrbrmstr/machinating-observable-plot-axis-text">the aforementioned Observable
+    notebook.</a></p>
 
-<p class="f5">You can also find two <a target="_blank" href="https://lit.dev/">Lit</a> Elements used in this Bonus Drop on <a target="_blank" href="https://gitlab.com/hrbrmstr/obs-plot">GitLab.</a></p>
+<p class="f5">You can also find two <a target="_blank" href="https://lit.dev/">Lit</a> Elements used in this Bonus
+  Drop on <a target="_blank" href="https://gitlab.com/hrbrmstr/obs-plot">GitLab.</a></p>
 
-    </article>
-  </main>
-<script type="module">
-import { format } from 'https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm'
-import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.10/+esm'
+</article>
+</main>
+  <script type="module">
+    import { mtcars, ipBytes, tagsIps } from './js/shared.js'
 
-import { mtcars, ipBytes, tagsIps } from './js/shared.js'
+    const ipPlt = Plot.plot({
+      className: 'ip-plt',
+      title: 'IP/Request Bytes Distribution',
+      subtitle: `Total samples: ${d3.format(',')(ipBytes.length)}`,
+      marginTop: 50,
+      marginRight: 20,
+      marginBottom: 30,
+      marginLeft: 160,
+      style: {
+        background: '#00000000',
+        fontFamily: 'Inconsolata,monospace',
+        fontSize: '18px'
+      },
+      x: {
+        grid: true,
+        inset: 6
+      },
+      y: {
+        label: null
+      },
+      marks: [
+        Plot.boxX(ipBytes, { x: 'bytes', y: 'ip' }),
+        Plot.axisX({ anchor: 'top' }),
+        Plot.axisY({ fontSize: 16 })
+      ]
+    });
 
-const ipPlt = Plot.plot({
-  className: 'ip-plt',
-  marginTop: 50,
-  title: 'IP/Request Bytes Distribution',
-  subtitle: `Total samples: ${format(',')(ipBytes.length)}`,
-  marginRight: 20,
-  marginBottom: 30,
-  marginLeft: 160,
-  style: {
-    background: '#00000000',
-    fontFamily: 'Inconsolata,monospace',
-    fontSize: '18px'
-  },
-  x: {
-    grid: true,
-    inset: 6
-  },
-  y: {
-    label: null
-  },
-  marks: [
-    Plot.boxX(ipBytes, { x: 'bytes', y: 'ip' }),
-    Plot.axisX({ anchor: 'top' })
-  ]
-});
-
-const textElements = ipPlt.querySelectorAll(
-  'figure.ip-plt-figure > svg > g[aria-label="y-axis tick label"] > text'
-);
-
-const ipList = document.getElementById("ip-list");
-ipList.innerText = [...textElements].map(d => d.textContent).join("\n");
-
-textElements.forEach((textElement) => {
-  textElement.style.cursor = "pointer";
-  textElement.addEventListener("click", () => {
-    window.open(
-      `https://viz.greynoise.io/ip/${textElement.textContent}?utm_source=observable`
+    const textElements = ipPlt.querySelectorAll(
+      'figure.ip-plt-figure > svg > g[aria-label="y-axis tick label"] > text'
     );
-  });
-  textElement.addEventListener("mouseenter", () => {
-    textElement.style.fontWeight = "bold";
-  });
-  textElement.addEventListener("mouseleave", () => {
-    textElement.style.fontWeight = "normal";
-  });
-});
 
-const plotHover = document.getElementById("plt-with-hover");
-plotHover.replaceChildren(ipPlt)
+    const ipList = document.getElementById("ip-list");
+    ipList.innerText = [ ...textElements ].map(d => d.textContent).join("\n");
 
-</script>
+    textElements.forEach((textElement) => {
+      textElement.style.cursor = "pointer";
+      textElement.addEventListener("click", () => {
+        window.open(
+          `https://viz.greynoise.io/ip/${textElement.textContent}?utm_source=observable`
+        );
+      });
+      textElement.addEventListener("mouseenter", () => {
+        textElement.style.fontWeight = "bold";
+      });
+      textElement.addEventListener("mouseleave", () => {
+        textElement.style.fontWeight = "normal";
+      });
+    });
+
+    const plotHover = document.getElementById("plt-with-hover");
+
+    plotHover.replaceChildren(ipPlt)
+  </script>
 </body>
+
 </html>

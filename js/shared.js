@@ -1,13 +1,13 @@
-import { csv, json } from 'https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm'
-import { autoType } from 'https://cdn.jsdelivr.net/npm/d3-dsv@3.0.1/+esm'
-
+// We need to inline the content from this into the LitElements
 const tachyons_pre = await fetch('https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css')
 export const tachyons = await tachyons_pre.text()
 
-export const mtcars = await csv('data/mtcars.csv', autoType);
-export const ipBytes = await json('data/ip-bytes.json');
-export const tagsIps = await json('data/tags-ips.json');
+// could just put these globally
+export const mtcars = await d3.csv('data/mtcars.csv', d3.autoType);
+export const ipBytes = await d3.json('data/ip-bytes.json');
+export const tagsIps = await d3.json('data/tags-ips.json');
 
+// change these at-will
 export const jsbOptions = {
   "indent_size": "2",
   "indent_char": " ",

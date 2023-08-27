@@ -1,7 +1,5 @@
 import { LitElement, css, html, unsafeCSS, unsafeHTML } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js'
 import * as shiki from '../shiki/dist/index.browser.mjs'
-import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.10/+esm'
-import { format } from 'https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm'
 
 import { tachyons, mtcars, ipBytes, tagsIps, jsbOptions } from '../js/shared.js'
 
